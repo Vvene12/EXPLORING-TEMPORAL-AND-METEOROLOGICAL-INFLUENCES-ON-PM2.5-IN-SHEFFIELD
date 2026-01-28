@@ -1,8 +1,11 @@
-# ============================================================
-# IJC437 – Air Quality (Sheffield) | OpenAQ + OpenMeteo (2024)
-# ============================================================
+# Reproducibility note:
+# Run this script from the project folder containing:
+# - Openaq.csv
+# - Openmeteo.csv
 
+# ------------------------------------------------------------
 # 1) Libraries
+# ------------------------------------------------------------
 library(dplyr)
 library(readr)
 library(lubridate)
@@ -13,15 +16,16 @@ library(reshape2)
 # ------------------------------------------------------------
 # 2) Load data
 # ------------------------------------------------------------
-pm_raw    <- read_csv("Openaq.csv")
-meteo_raw <- read_csv("Openmeteo.csv")
+openaq_raw     <- read_csv("Openaq.csv")
+openmeteo_raw  <- read_csv("Openmeteo.csv")
 
 # ------------------------------------------------------------
 # 3) Clean OpenAQ (PM2.5)
 # ------------------------------------------------------------
-pm_clean <- pm_raw %>%
+openaq_clean <- openaq_raw %>%
   mutate(
-    pm25 = str_extract(`PM2.5 particulate matter (Hourly measured)`, "[0-9\\.]+") %>% as.numeric(),
+    pm25 = str_extract(`PM2.5 particulate matter (Hourly measured)`, "[0-9\\.]+") %>%
+      as.numeric(),
     Date = as.Date(Date, format = "%d/%m/%Y"),
     Time = as.character(Time)
   ) %>%
@@ -30,7 +34,7 @@ pm_clean <- pm_raw %>%
 # ------------------------------------------------------------
 # 4) Clean OpenMeteo (Weather)
 # ------------------------------------------------------------
-meteo_clean <- meteo_raw %>%
+openmeteo_clean <- openmeteo_raw %>%
   mutate(
     Date = as.Date(format(time, "%Y-%m-%d")),
     Time = format(time, "%H:%M:%S")
@@ -43,17 +47,29 @@ meteo_clean <- meteo_raw %>%
     wind_speed_10m        = `wind_speed_10m (km/h)`,
     wind_direction_10m    = `wind_direction_10m (°)`
   ) %>%
-  select(Date, Time, temperature_2m, relative_humidity_2m,
-         precipitation, surface_pressure, wind_speed_10m, wind_direction_10m)
+  select(
+    Date, Time,
+    temperature_2m,
+    relative_humidity_2m,
+    precipitation,
+    surface_pressure,
+    wind_speed_10m,
+    wind_direction_10m
+  )
 
 # ------------------------------------------------------------
 # 5) Merge datasets (hourly alignment)
 # ------------------------------------------------------------
-sheffield_data <- pm_clean %>%
-  inner_join(meteo_clean, by = c("Date", "Time"))
+sheffield_data <- openaq_clean %>%
+  inner_join(openmeteo_clean, by = c("Date", "Time"))
+
+# Exports (for GitHub)
+write.csv(sheffield_data, "sheffield_data.csv", row.names = FALSE)
+write.csv(openaq_clean, "openaq_clean.csv", row.names = FALSE)
+write.csv(openmeteo_clean, "openmeteo_clean.csv", row.names = FALSE)
 
 # ------------------------------------------------------------
-# 6) Missing values check + cleaning (KEEP THIS EXPLICIT)
+# 6) Missing values check + cleaning 
 # ------------------------------------------------------------
 cat("\n--- Missing values summary (before cleaning) ---\n")
 missing_summary <- colSums(is.na(sheffield_data))
@@ -61,7 +77,7 @@ print(missing_summary)
 
 cat("\nTotal rows before cleaning:", nrow(sheffield_data), "\n")
 
-# Remove rows with missing PM2.5 (small proportion, no imputation applied)
+# Remove rows with missing PM2.5 
 sheffield_data_clean <- sheffield_data %>%
   filter(!is.na(pm25))
 
@@ -103,21 +119,17 @@ rq1_summary <- plot_data %>%
   )
 
 p_rq1 <- ggplot(rq1_summary, aes(x = Hour)) +
-  
-  # Variability band (IQR)
-  geom_ribbon(aes(ymin = p25, ymax = p75, fill = DayType),
-              alpha = 0.25, colour = NA) +
-  
-  # Mean line
+  geom_ribbon(
+    aes(ymin = p25, ymax = p75, fill = DayType),
+    alpha = 0.25, colour = NA
+  ) +
   geom_line(aes(y = avg_pm25, colour = DayType), linewidth = 1.2) +
-  
   scale_x_continuous(breaks = seq(0, 23, 3)) +
   labs(
     title = "Hourly PM2.5 Patterns: Weekdays vs Weekends",
-    subtitle = NULL,
     x = "Hour of Day (24h)",
     y = "PM2.5 (µg/m³)",
-    color = "Day Type",
+    colour = "Day Type",
     fill = "Day Type"
   ) +
   theme_minimal(base_size = 12) +
@@ -129,38 +141,37 @@ p_rq1 <- ggplot(rq1_summary, aes(x = Hour)) +
 
 print(p_rq1)
 
-
-
-
-
 # ============================================================
 # GRAPH 2 (RQ2): Meteorological drivers (correlation heatmap)
 # ============================================================
+# Correlation data
+cor_data <- plot_data %>%
+  select(pm25, temperature_2m, relative_humidity_2m,
+         precipitation, surface_pressure, wind_speed_10m)
+
+cor_matrix <- cor(cor_data, use = "complete.obs")
+melted_cor <- melt(cor_matrix)
+
 p_rq2 <- ggplot(melted_cor, aes(x = Var1, y = Var2, fill = value)) +
   geom_tile(color = "white", linewidth = 0.4) +
-  
-  # Correlation values (de-emphasised)
   geom_text(
     aes(label = sprintf("%.2f", value)),
     size = 3.2,
     color = "grey20"
   ) +
-  
   scale_fill_gradient2(
-    low = "#2b8cbe",     # muted blue
-    mid = "#f7f7f7",     # very light grey
-    high = "#fbb4ae",    # muted red
+    low = "#2b8cbe",
+    mid = "#f7f7f7",
+    high = "#fbb4ae",
     midpoint = 0,
     limits = c(-1, 1),
     name = "Pearson r"
   ) +
-  
   coord_fixed() +
   labs(
     title = "Meteorological Drivers of PM2.5",
     x = NULL, y = NULL
   ) +
-  
   theme_minimal(base_size = 12) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1, color = "black"),
@@ -172,9 +183,8 @@ p_rq2 <- ggplot(melted_cor, aes(x = Var1, y = Var2, fill = value)) +
 
 print(p_rq2)
 
-
 # ============================================================
-# GRAPH 3 (RQ3): Seasonal baseline (boxplot)
+# GRAPH 3 (RQ3): Seasonal baseline (daily mean boxplot)
 # ============================================================
 daily_pm25 <- plot_data %>%
   group_by(Date) %>%
@@ -185,25 +195,20 @@ daily_pm25 <- plot_data %>%
   )
 
 p_rq3 <- ggplot(daily_pm25, aes(x = Season, y = daily_pm25, fill = Season)) +
-  
   geom_boxplot(outlier.alpha = 0.15, width = 0.6) +
-  
   scale_fill_manual(
     values = c(
-      "Spring" = "#fbb4c4",  # pastel pink
-      "Summer" = "#b2e2b4",  # pastel green
-      "Autumn" = "#fdcc8a",  # pastel orange
-      "Winter" = "#bdd7e7"   # pastel blue
+      "Spring" = "#fbb4c4",
+      "Summer" = "#b2e2b4",
+      "Autumn" = "#fdcc8a",
+      "Winter" = "#bdd7e7"
     )
   ) +
-  
   labs(
     title = "Seasonal Distribution of Daily Mean PM2.5 Levels",
-    subtitle = "Boxplots summarising daily average concentrations by season",
-    x = NULL,
+    x = "Season Type",
     y = "Daily Mean PM2.5 (µg/m³)"
   ) +
-  
   theme_minimal(base_size = 12) +
   theme(
     plot.title = element_text(face = "bold"),
@@ -213,4 +218,16 @@ p_rq3 <- ggplot(daily_pm25, aes(x = Season, y = daily_pm25, fill = Season)) +
   )
 
 print(p_rq3)
+
+# ------------------------------------------------------------
+# 8) Save figures for report and appendix
+# ------------------------------------------------------------
+ggsave("Figure3.1_RQ1.png", p_rq1, width = 8, height = 5, dpi = 300)
+ggsave("Figure3.2_RQ2.png", p_rq2, width = 7, height = 6, dpi = 300)
+ggsave("Figure3.3_RQ3.png", p_rq3, width = 7, height = 5, dpi = 300)
+
+# ------------------------------------------------------------
+# 9) Session information 
+# ------------------------------------------------------------
+sessionInfo()
 
