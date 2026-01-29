@@ -63,11 +63,6 @@ openmeteo_clean <- openmeteo_raw %>%
 sheffield_data <- openaq_clean %>%
   inner_join(openmeteo_clean, by = c("Date", "Time"))
 
-# Exports (for GitHub)
-write.csv(sheffield_data, "sheffield_data.csv", row.names = FALSE)
-write.csv(openaq_clean, "openaq_clean.csv", row.names = FALSE)
-write.csv(openmeteo_clean, "openmeteo_clean.csv", row.names = FALSE)
-
 # ------------------------------------------------------------
 # 6) Missing values check + cleaning 
 # ------------------------------------------------------------
@@ -230,4 +225,5 @@ ggsave("Figure3.3_RQ3.png", p_rq3, width = 7, height = 5, dpi = 300)
 # 9) Session information 
 # ------------------------------------------------------------
 sessionInfo()
+
 
