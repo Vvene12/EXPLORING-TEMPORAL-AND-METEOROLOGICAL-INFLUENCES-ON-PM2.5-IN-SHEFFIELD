@@ -1,7 +1,7 @@
 ## EXPLORING TEMPORAL AND METEOROLOGICAL INFLUENCES ON PM2.5 IN SHEFFIELD
 
 ### 🖋️Project Overview 
-This project examines short-term and seasonal variability in PM2.5 concentrations in Sheffield using open air quality and meteorological data. The analysis focuses on identifying temporal patterns (hourly, daily, weekly), examining associations with local weather conditions, and assessing seasonal differences in PM2.5 levels. The project was completed as part of the IJC437 Introduction to Data Science module.
+This project examines short-term and seasonal variability in PM2.5 concentrations in Sheffield using open air quality and meteorological data. The analysis focuses on identifying temporal patterns (hourly, daily, weekly), examining associations with local weather conditions, and assessing seasonal differences in PM2.5 levels. 
 
 
 ### ❓Research Questions
