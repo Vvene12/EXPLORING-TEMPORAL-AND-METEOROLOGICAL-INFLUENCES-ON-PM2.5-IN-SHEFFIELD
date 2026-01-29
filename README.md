@@ -24,21 +24,22 @@ This project examines short-term and seasonal variability in PM2.5 concentration
 
 ### ⚙️Repository Structure
 ```text
-├── README.md                # Project overview and instructions
-├── data/
-│   ├── Openaq.csv           # Raw PM2.5 data
-│   ├── Openmeteo.csv        # Raw meteorological data
-│   └── sheffield_data.csv  # Cleaned and merged dataset
+├── README.md                      # Project overview and instructions
+├── dataset/
+│   ├── Openaq.csv                 # Raw PM2.5 data
+│   └── Openmeteo.csv              # Raw meteorological data
 ├── scripts/
-│   └── analysis.R          # Data cleaning, analysis, and visualisation code
+│   └── final_code.R               # Data cleaning, analysis, and visualisation code
 ├── figures/
-│   └── *.png               # Output figures used in the report
+│   └── figure3.1_RQ1.png          # Output figures used in the report
+│   ├── figure3.2_RQ2.png
+│   └── figure3.3_RQ3.png 
 ```
 
 
 ### 💻 Code
 
-All analysis was conducted in **R** using **RStudio**. The main script (`analysis.R`) includes:
+All analysis was conducted in **R** using **RStudio**. The main script (`final_code.R`) includes:
 - Data cleaning and preprocessing  
 - Dataset integration  
 - Exploratory and statistical analysis  
