@@ -1,22 +1,28 @@
-# Intro-to-Data-Science
+## EXPLORING TEMPORAL AND METEOROLOGICAL INFLUENCES ON PM2.5 IN SHEFFIELD
 
-## Project Overview 
-This project investigates short-term and seasonal variability in PM2.5 concentrations in Sheffield using open air quality and meteorological data. The analysis focuses on identifying temporal patterns (hourly, daily, weekly), examining associations with local weather conditions, and assessing seasonal differences in PM2.5 levels. The project was completed as part of the IJC437 Introduction to Data Science module.
+### 🖋️Project Overview 
+This project examines short-term and seasonal variability in PM2.5 concentrations in Sheffield using open air quality and meteorological data. The analysis focuses on identifying temporal patterns (hourly, daily, weekly), examining associations with local weather conditions, and assessing seasonal differences in PM2.5 levels. The project was completed as part of the IJC437 Introduction to Data Science module.
 
-## Research Questions
-RQ1: How do PM2.5 concentrations vary across hourly, daily, and weekly time patterns? 
-RQ2: How are local meteorological variables associated with fluctuations in PM2.5 concentrations? 
-RQ3: How do seasonal differences influence short-term (hourly and daily) variability in PM2.5 concentrations?
 
-## Key Findings
-Key finding 1:
-PM2.5 concentrations follow structured diurnal patterns, with clear differences between weekdays and weekends. The high levels of PM2.5 in the morning and evening hours point to the influence of activity-related temporal patterns rather than random variation.
-Key finding 2:
-Wind speed has the strongest association with PM2.5 concentrations among all the meteorological variables analysed. This is characterised by a moderate negative correlation, that indicates periods of stronger winds tend to coincide with reduced PM2.5 concentrations.
-Key finding 3:
-Seasonal changes have a significant impact on baseline PM2.5 concentrations. Autumn and spring are characterised by higher average levels and more frequent high-pollution days, while summer has lower and more constant PM2.5 levels.
+### ❓Research Questions
+1. **RQ1:** How do PM2.5 concentrations vary across hourly, daily, and weekly time patterns?
+2. **RQ2:** How are local meteorological variables associated with fluctuations in PM2.5 concentrations?
+3. **RQ3:** How do seasonal differences influence short-term (daily) variability in PM2.5 concentrations?
 
-## Repository Structure
+
+### 📊 Key Findings
+
+- **Key Finding 1 (Section 3.1, Figure 3.1):**  
+  PM2.5 concentrations exhibit structured diurnal patterns, with clear differences between weekdays and weekends. Distinct morning and evening variations indicate activity-related temporal patterns rather than random fluctuations.
+
+- **Key Finding 2 (Section 3.1, Figure 3.2):**  
+  Wind speed shows the strongest association with PM2.5, characterised by a moderate negative correlation. This highlights wind speed as the most influential meteorological variable in explaining short-term changes in PM2.5 within the study area.
+
+- **Key Finding 3 (Section 3.1, Figure 3.3):**  
+  Seasonal differences have a significant impact on baseline PM2.5 concentrations, with higher typical levels observed in autumn and spring, and lower, more stable concentrations during summer.
+
+
+### ⚙️Repository Structure
 ```text
 ├── README.md                # Project overview and instructions
 ├── data/
@@ -30,16 +36,30 @@ Seasonal changes have a significant impact on baseline PM2.5 concentrations. Aut
 ```
 
 
-## Code
-All analysis was conducted in R using RStudio.
-The main script (analysis.R) includes:
-Data cleaning and preprocessing
-Dataset integration
-Exploratory and statistical analysis
-Visualisation of results
+### 💻 Code
+
+All analysis was conducted in **R** using **RStudio**. The main script (`analysis.R`) includes:
+- Data cleaning and preprocessing  
+- Dataset integration  
+- Exploratory and statistical analysis  
+- Visualisation of results  
+
 The code is fully commented and structured to support reproducibility.
 
 
+### ▶️ How to Run the Code
+#### Requirements
+- **R** (version 4.0 or above recommended)
+- **RStudio** (recommended)
 
+#### Steps
+1. Download or clone this repository.
+2. Ensure the following files are present in the `data/` folder:
+   - `Openaq.csv`
+   - `Openmeteo.csv`
+3. Open RStudio and set the working directory to the repository root (the folder containing `README.md`).
+4. Install required packages (first time only):
+   ```r
+   install.packages(c("dplyr", "readr", "lubridate", "stringr", "ggplot2", "reshape2"))
 
 
